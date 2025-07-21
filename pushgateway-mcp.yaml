@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pushgateway
+  namespace: cattle-monitoring-system
+  labels:
+    app: pushgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pushgateway
+  template:
+    metadata:
+      labels:
+        app: pushgateway
+    spec:
+      containers:
+        - name: pushgateway
+          image: prom/pushgateway:v1.8.0
+          ports:
+            - name: http
+              containerPort: 9091
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pushgateway
+  namespace: cattle-monitoring-system
+  labels:
+    app: pushgateway
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9091
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: pushgateway
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: pushgateway-sm
+  namespace: cattle-monitoring-system
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: pushgateway
+  namespaceSelector:
+    matchNames:
+      - cattle-monitoring-system
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+      honorLabels: true
