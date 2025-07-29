@@ -1,0 +1,13 @@
+# Abilita la creazione del ServiceMonitor per l'integrazione con Prometheus Operator.
+serviceMonitor:
+  enabled: true
+
+  # Aggiunge l'etichetta 'release: prometheus' al ServiceMonitor,
+  # come nel file pushgateway-mcp.yaml, per essere scoperto da Prometheus.
+  labels:
+    release: prometheus
+
+  # Configurazione dell'endpoint da monitorare.
+  # Mantiene le etichette originali dei job inviati al Pushgateway.
+  # Questa è un'impostazione cruciale per il corretto funzionamento.
+  honorLabels: true
