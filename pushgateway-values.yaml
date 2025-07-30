@@ -7,6 +7,15 @@ serviceMonitor:
   labels:
     release: prometheus
 
+  # Aggiunge un selettore per trovare il Service corretto.
+  # Questo deve corrispondere alle etichette del Service del pushgateway.
+  matchLabels:
+    app.kubernetes.io/instance: my-pushgateway
+    app.kubernetes.io/name: prometheus-pushgateway
+
+  # Specifica il namespace per il ServiceMonitor.
+  namespace: cattle-monitoring-system
+
   # Configurazione dell'endpoint da monitorare.
   # Mantiene le etichette originali dei job inviati al Pushgateway.
   # Questa è un'impostazione cruciale per il corretto funzionamento.

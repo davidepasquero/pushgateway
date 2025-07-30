@@ -1,0 +1,30 @@
+# Default values for harvester-pusher-chart.
+
+# -- Immagine del container da utilizzare
+image:
+  repository: docker-nivola.ecosis.csi.it/harvester-metrics-pusher
+  pullPolicy: IfNotPresent
+  # Overwrite the image tag whose default is the chart appVersion.
+  tag: "1.0.0"
+
+# -- Configurazione del CronJob
+cronjob:
+  # -- La schedule in formato cron per l'esecuzione del job
+  schedule: "*/5 * * * *"
+  # -- La restart policy per i pod del job
+  restartPolicy: OnFailure
+
+# -- Impostazioni per la creazione del Secret con le credenziali di Harvester
+secret:
+  # -- Se 'true', il chart creerà un Secret. Se 'false', devi fornire il nome di un secret esistente in 'existingSecretName'.
+  create: true
+  # -- Il nome di un Secret esistente da utilizzare se 'create' è 'false'.
+  existingSecretName: ""
+
+# -- Credenziali e endpoint di Harvester. Usate solo se 'secret.create' è 'true'.
+credentials:
+  username: "admin"
+  # -- ATTENZIONE: La password deve essere sovrascritta durante l'installazione!
+  password: "your-password-here"
+  # -- L'endpoint dell'API di Harvester (es. https://my-harvester.domain.com)
+  endpoint: "https://vip-harvester-prod.r01az01.nivolapiemonte.it"

@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "harvester-pusher-chart.fullname" . }}
+  labels:
+    {{- include "harvester-pusher-chart.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  # Imposta il numero di job completati/falliti da conservare
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      # Aggiunge un TTL per cancellare i job dopo che sono terminati (in secondi)
+      # 15 minuti = 900 secondi
+      ttlSecondsAfterFinished: 900
+      template:
+        metadata:
+          labels:
+            {{- include "harvester-pusher-chart.selectorLabels" . | nindent 12 }}
+        spec:
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              volumeMounts:
+                - name: creds
+                  mountPath: /secrets
+                  readOnly: true
+          restartPolicy: {{ .Values.cronjob.restartPolicy }}
+          volumes:
+            - name: creds
+              secret:
+                secretName: {{ include "harvester-pusher-chart.secretName" . }}
