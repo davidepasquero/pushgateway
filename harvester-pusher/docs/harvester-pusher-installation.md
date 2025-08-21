@@ -50,11 +50,11 @@ helm upgrade --install harvester-pusher nivola/harvester-pusher-chart \
   --namespace cattle-monitoring-system \
   --version 1.1.2 \
   --set image.tag=1.1.2 \
-  --set credentials.password='Cs1$harvester!2025' \
+  --set credentials.password='password harvester admin' \
   --set credentials.endpoint='https://vip-harvester-prod.r01az01.nivolapiemonte.it'
 ```
 
-**Nota:** La password `Cs1$harvester!2025` è stata usata come esempio. Assicurati di usare la password corretta per il tuo ambiente.
+**Nota:** La password `password harvester admin` è stata usata come esempio. Assicurati di usare la password corretta per il tuo ambiente.
 
 ## Verifica dell'Installazione
 
